@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Manage My Money</title>
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="http://cdn.appacitive.com/sdk/js/appacitive-js-sdk-v1.0.6.min.js"></script>
+    <script language="javascript">
+    var xmlhttp;
+    function init() {
+       // put more code here in case you are concerned about browsers that do not provide XMLHttpRequest object directly
+       xmlhttp = new XMLHttpRequest();
+    }
+    function addTransaction() {
+       
+        var amnt = document.getElementById("amount").value;
+        var merName =  document.getElementById("merName").value;
+        
+        var promise = Appacitive.initialize({ 
+        apikey: "kTMI9GL6hfGVCMXKU3t01v4Styji/Edf9EZeZYXeDKo=",// The master or client api key for your app on appacitive.
+        env: "sandbox",      // The environment that you are targetting (sandbox or live).
+        appId: "108701676598329993"     // The app id for your app on appacitive. 
+        });
+
+      promise.then(function(current) {
+        var TransactionClass = Appacitive.Object.extend('transaction');
+        var txn = new TransactionClass();
+        txn.set('merchant', merName);
+        txn.set('amount', amnt);
+        txn.set('date', new Date());
+
+
+
+        var AccountTransactionClass = Appacitive.Connection.extend('account_transaction');
+        var conn = new AccountTransactionClass({
+          endpoints: [
+            {
+              label:'account',
+              objectid:'110094475860246811'
+            },
+            {
+              label:'transaction',
+              object:txn
+            }
+          ]
+        });
+
+        conn.save({
+  success : function() {
+    alert('saved successfully!');
+  },
+  error: function(status) {
+    alert("save failed due to " + status.message);
+  }
+});
+
+      });
+
+
+    }
+  </script>
+  </head>
+  <body  onload="init()">
+   <h1>Call Bank Service </h1>
+   <table>
+   <tr>
+       <td>Enter Amount :  </td>
+       <td><input type="text" id="amount" size="10"/>
+   </tr>
+   <tr>
+       <td>Enter Merchant Name :  </td>
+       <td><input type="text" id="merName" size="20"/> </td>
+   </tr>
+
+   <tr>
+       <td><input type="button" value="Swipe Card" onclick="addTransaction()"/> </td>
+   </tr>
+   </table>
+  </body>
+</html>

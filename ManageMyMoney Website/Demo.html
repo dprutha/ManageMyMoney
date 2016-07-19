@@ -1,0 +1,155 @@
+<!DOCTYPE HTML>
+<!--
+	Retrospect by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+	<head>
+		<title>Retrospect by TEMPLATED</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+
+		    <script src="http://cdn.appacitive.com/sdk/js/appacitive-js-sdk-v1.0.6.min.js"></script>
+    <script language="javascript">
+    var xmlhttp;
+    function init() {
+       // put more code here in case you are concerned about browsers that do not provide XMLHttpRequest object directly
+       xmlhttp = new XMLHttpRequest();
+    }
+    function addTransaction() {
+       
+        var amnt = document.getElementById("amount").value;
+        var merName =  document.getElementById("merName").value;
+        var e = document.getElementById("ddlCategory");
+		var category = e.options[e.selectedIndex].value;
+
+		if((!amnt.match(/\S/)) || (!merName.match(/\S/)) || (!category.match(/\S/)))
+		{
+			alert("Input cannot be empty");
+		}
+		else if (isNaN(amnt) || Number(amnt)<=0) 
+		{
+			alert("Amount should be numeric and positive");
+		}
+		else
+		{
+			amnt = amnt * -1;
+        var promise = Appacitive.initialize({ 
+        apikey: "kTMI9GL6hfGVCMXKU3t01v4Styji/Edf9EZeZYXeDKo=",// The master or client api key for your app on appacitive.
+        env: "sandbox",      // The environment that you are targetting (sandbox or live).
+        appId: "108701676598329993"     // The app id for your app on appacitive. 
+        });
+
+      promise.then(function(current) {
+        var TransactionClass = Appacitive.Object.extend('transaction');
+        var txn = new TransactionClass();
+        txn.set('merchant', merName);
+        txn.set('amount', amnt);
+        txn.set('date', new Date());
+        txn.set('category', category);
+
+
+        var AccountTransactionClass = Appacitive.Connection.extend('account_transaction');
+        var conn = new AccountTransactionClass({
+          endpoints: [
+            {
+              label:'account',
+              objectid:'110094475860246811'
+            },
+            {
+              label:'transaction',
+              object:txn
+            }
+          ]
+        });
+
+        conn.save({
+  success : function() {
+    alert('saved successfully!');
+  },
+  error: function(status) {
+    alert("save failed due to " + status.message);
+  }
+});
+
+      });
+
+    }
+  
+    }
+  </script>
+		
+	</head>
+	<body class="landing" onload="init()">
+
+		<!-- Banner -->
+			<section id="banner">
+				<i class="icon fa-diamond"></i>
+				<h2>Manage My Money</h2>
+				<p>The only money management app that you'll ever need. Period.</p>
+			</section>
+
+			<!-- Four -->
+			<section id="two" class="wrapper special">
+				<div class="inner">
+					<header class="major narrow">
+						<h2>Transaction simulation</h2>
+						<p>Enter details</p>
+					</header>
+					<form action="#" method="POST">
+						<div class="container 75%">
+							<div class="row uniform 50%">
+								<div class="6u 12u$(xsmall)">
+									<input type="text" id="amount" placeholder="Amount"/>
+								</div>
+								<div class="6u$ 12u$(xsmall)">
+									<input type="text" id="merName" placeholder="Merchant Name"/>
+								</div>
+								<div class="6u$ 12u$(xsmall)">
+									<select id="ddlCategory">
+										<option value>Select Category</option>
+										<option value="food">Food</option>
+										<option value="entertainment">Entertainment</option>
+										<option value="shopping">Shopping</option>
+										<option value="conveyance">Conveyance</option>
+										<option value="education">Education</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<ul class="actions">
+							<li><input type="button" value="Swipe Card" onclick="addTransaction()"/>
+						</ul>
+					</form>
+				</div>
+			</section>
+
+				<!-- Footer -->
+			<footer id="footer">
+				<div class="inner">
+					<ul class="copyright">
+						<li>&copy; Team:
+							<ul>
+								<li>Sushant Athley</li>
+								<li>Prutha Date</li>
+								<li>Purva Kulkarni</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>
